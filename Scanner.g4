@@ -3,6 +3,8 @@ grammar scanner;
 
 NEWLINE: '\r'? '\n' -> skip;
 WS: [ \n\t\r]+ -> skip;
+SINGLECOMMENT: '--' ~[\r\n]* -> skip;
+MULTICOMMENT: '(*' .*? '*)' -> skip;
 
 INHERITS: 'inherits' | 'INHERITS';
 CLASS: 'class' | 'CLASS';
@@ -59,7 +61,7 @@ STRING: '"' ( ESC | .)*? '"'{
         }
         i++;
     }
-    if (len > 10){
+    if (len > 1000){
         setText("Tamanio de string excedido");
         setType(ERROR);
         return;
