@@ -8,3 +8,7 @@ Para correr el programa ejecutar en cmd:
 3. java Main
 
 Se requiere la instalacion de ANTLR y SDK de Java
+
+Juan Diego Solorzano - 18151
+
+Juan Fernando de Leon - 17822
