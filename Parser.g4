@@ -2,7 +2,7 @@ grammar Parser;
 import Scanner;
 
 program:	(newClass)+ EOF ;
-newClass: CLASS TYPE (INHERITS TYPE)? LBRACE (feature SEMICOLON)* RBRACE SEMICOLON;
+class: CLASS TYPE (INHERITS TYPE)? LBRACE (feature SEMICOLON)* RBRACE SEMICOLON;
 feature: ID LPAREN (param (COMMA param)*)* RPAREN COLON TYPE LBRACE expr RBRACE
     |   ID COLON TYPE (ASSIGN expr)?
     ;
