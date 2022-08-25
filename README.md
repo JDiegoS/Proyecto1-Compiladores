@@ -1,4 +1,4 @@
-# Proyecto 1 -cCompiladores
+# Proyecto 1 - Compiladores
 
 Para correr el programa ejecutar en cmd:
 1. antlr -visitor -no-listener Parser.g4
