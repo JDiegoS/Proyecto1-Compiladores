@@ -49,23 +49,6 @@ LT: '<';
 LEQUALS: '<=';
 EQUALS: '=';
 ERROR: . ;
-STRING: '"' ( ESC | .)*? '"'{
-    String text = getText();
-    int len = text.length();
-
-    for (int i = 1; i < len - 1; ) {
-        if (text.charAt(i) == '\\' && i + 1 < len && text.charAt(i+1) == '\u0000'){
-            setText("Caracter de nueva linea no escapado");
-            setType(ERROR);
-            return;
-        }
-        i++;
-    }
-    if (len > 1000){
-        setText("Tamanio de string excedido");
-        setType(ERROR);
-        return;
-    }
-};
+STRING: '"' ( ESC | .)*? '"';
 
 fragment ESC: '\\"' | '\\\\';
