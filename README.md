@@ -1,6 +1,4 @@
-# Lab0-Compiladores
-
-Video:  https://youtu.be/hQOGghXBPYc
+# Proyecto 1 -cCompiladores
 
 Para correr el programa ejecutar en cmd:
 1. antlr -visitor -no-listener Parser.g4
