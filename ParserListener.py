@@ -26,12 +26,21 @@ class ParserListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ParserParser#feature.
-    def enterFeature(self, ctx:ParserParser.FeatureContext):
+    # Enter a parse tree produced by ParserParser#MethodFeature.
+    def enterMethodFeature(self, ctx:ParserParser.MethodFeatureContext):
         pass
 
-    # Exit a parse tree produced by ParserParser#feature.
-    def exitFeature(self, ctx:ParserParser.FeatureContext):
+    # Exit a parse tree produced by ParserParser#MethodFeature.
+    def exitMethodFeature(self, ctx:ParserParser.MethodFeatureContext):
+        pass
+
+
+    # Enter a parse tree produced by ParserParser#AssignFeature.
+    def enterAssignFeature(self, ctx:ParserParser.AssignFeatureContext):
+        pass
+
+    # Exit a parse tree produced by ParserParser#AssignFeature.
+    def exitAssignFeature(self, ctx:ParserParser.AssignFeatureContext):
         pass
 
 

@@ -27,15 +27,29 @@ public interface ParserListener extends ParseTreeListener {
 	 */
 	void exitClass(ParserParser.ClassContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ParserParser#feature}.
+	 * Enter a parse tree produced by the {@code MethodFeature}
+	 * labeled alternative in {@link ParserParser#feature}.
 	 * @param ctx the parse tree
 	 */
-	void enterFeature(ParserParser.FeatureContext ctx);
+	void enterMethodFeature(ParserParser.MethodFeatureContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ParserParser#feature}.
+	 * Exit a parse tree produced by the {@code MethodFeature}
+	 * labeled alternative in {@link ParserParser#feature}.
 	 * @param ctx the parse tree
 	 */
-	void exitFeature(ParserParser.FeatureContext ctx);
+	void exitMethodFeature(ParserParser.MethodFeatureContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code AssignFeature}
+	 * labeled alternative in {@link ParserParser#feature}.
+	 * @param ctx the parse tree
+	 */
+	void enterAssignFeature(ParserParser.AssignFeatureContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code AssignFeature}
+	 * labeled alternative in {@link ParserParser#feature}.
+	 * @param ctx the parse tree
+	 */
+	void exitAssignFeature(ParserParser.AssignFeatureContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ParserParser#param}.
 	 * @param ctx the parse tree

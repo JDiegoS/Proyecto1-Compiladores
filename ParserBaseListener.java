@@ -39,13 +39,25 @@ public class ParserBaseListener implements ParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFeature(ParserParser.FeatureContext ctx) { }
+	@Override public void enterMethodFeature(ParserParser.MethodFeatureContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFeature(ParserParser.FeatureContext ctx) { }
+	@Override public void exitMethodFeature(ParserParser.MethodFeatureContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterAssignFeature(ParserParser.AssignFeatureContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAssignFeature(ParserParser.AssignFeatureContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

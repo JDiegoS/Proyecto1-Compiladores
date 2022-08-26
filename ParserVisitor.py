@@ -19,8 +19,13 @@ class ParserVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ParserParser#feature.
-    def visitFeature(self, ctx:ParserParser.FeatureContext):
+    # Visit a parse tree produced by ParserParser#MethodFeature.
+    def visitMethodFeature(self, ctx:ParserParser.MethodFeatureContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by ParserParser#AssignFeature.
+    def visitAssignFeature(self, ctx:ParserParser.AssignFeatureContext):
         return self.visitChildren(ctx)
 
 

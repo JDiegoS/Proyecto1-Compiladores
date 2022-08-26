@@ -9,7 +9,6 @@ MULTICOMMENT: '(*' .*? '*)' -> skip;
 INHERITS: 'inherits' | 'INHERITS';
 CLASS: 'class' | 'CLASS';
 TYPE: [A-Z_][_A-Za-z0-9]*;
-ID: [a-z_][_A-Za-z0-9]*;
 INT: [0-9]+;
 SEMICOLON: ';';
 TRUE: 'true';
@@ -29,6 +28,7 @@ ESAC: 'esac';
 NEW: 'new';
 OF: 'of';
 NOT: 'not';
+ID: [a-z_][_A-Za-z0-9]*;
 
 LPAREN: '(';
 RPAREN: ')';

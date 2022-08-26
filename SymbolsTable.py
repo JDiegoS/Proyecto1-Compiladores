@@ -54,3 +54,6 @@ class SymbolTable:
     def __str__(self):
         table = map(lambda x: x.values(), self.table)
         return tabulate(table, headers=['name', 'type', 'kind', 'scope', 'line', 'value'])
+
+    def getTable(self):
+        return self.table
