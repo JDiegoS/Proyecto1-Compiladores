@@ -17,15 +17,15 @@ public interface ParserListener extends ParseTreeListener {
 	 */
 	void exitProgram(ParserParser.ProgramContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ParserParser#newClass}.
+	 * Enter a parse tree produced by {@link ParserParser#class}.
 	 * @param ctx the parse tree
 	 */
-	void enterNewClass(ParserParser.NewClassContext ctx);
+	void enterClass(ParserParser.ClassContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ParserParser#newClass}.
+	 * Exit a parse tree produced by {@link ParserParser#class}.
 	 * @param ctx the parse tree
 	 */
-	void exitNewClass(ParserParser.NewClassContext ctx);
+	void exitClass(ParserParser.ClassContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ParserParser#feature}.
 	 * @param ctx the parse tree

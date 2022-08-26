@@ -27,13 +27,13 @@ public class ParserBaseListener implements ParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNewClass(ParserParser.NewClassContext ctx) { }
+	@Override public void enterClass(ParserParser.ClassContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNewClass(ParserParser.NewClassContext ctx) { }
+	@Override public void exitClass(ParserParser.ClassContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

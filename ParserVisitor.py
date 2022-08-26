@@ -11,21 +11,16 @@ class ParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by ParserParser#program.
     def visitProgram(self, ctx:ParserParser.ProgramContext):
-        print("program")
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ParserParser#newClass.
-    def visitNewClass(self, ctx:ParserParser.NewClassContext):
-        print("newC")
-
+    # Visit a parse tree produced by ParserParser#class.
+    def visitClass(self, ctx:ParserParser.ClassContext):
         return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by ParserParser#feature.
     def visitFeature(self, ctx:ParserParser.FeatureContext):
-        print("feature")
-
         return self.visitChildren(ctx)
 
 
@@ -46,12 +41,6 @@ class ParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by ParserParser#StringExpr.
     def visitStringExpr(self, ctx:ParserParser.StringExprContext):
-        if (len(ctx.getText()) > 10):
-            print("ERROR: Longitud de string excedida\n\tLinea [%s:%s] %s" % (ctx.start.line, ctx.start.column, ctx.getText()))
-            print(ctx.start.type)
-            ctx.start.type = 46
-            print(ctx.start.type)
-
         return self.visitChildren(ctx)
 
 

@@ -61,8 +61,8 @@ def serializedATN():
         5,15,0,0,136,155,3,8,4,18,137,138,5,25,0,0,138,155,5,7,0,0,139,140,
         5,35,0,0,140,155,3,8,4,16,141,142,5,16,0,0,142,155,3,8,4,15,143,
         144,5,28,0,0,144,145,3,8,4,0,145,146,5,29,0,0,146,155,1,0,0,0,147,
-        148,5,27,0,0,148,155,3,8,4,6,149,155,5,8,0,0,150,155,5,9,0,0,151,
-        155,5,47,0,0,152,155,5,11,0,0,153,155,5,12,0,0,154,70,1,0,0,0,154,
+        148,5,27,0,0,148,155,3,8,4,6,149,155,5,9,0,0,150,155,5,47,0,0,151,
+        155,5,11,0,0,152,155,5,12,0,0,153,155,5,8,0,0,154,70,1,0,0,0,154,
         74,1,0,0,0,154,90,1,0,0,0,154,98,1,0,0,0,154,104,1,0,0,0,154,114,
         1,0,0,0,154,137,1,0,0,0,154,139,1,0,0,0,154,141,1,0,0,0,154,143,
         1,0,0,0,154,147,1,0,0,0,154,149,1,0,0,0,154,150,1,0,0,0,154,151,
@@ -114,12 +114,12 @@ class ParserParser ( Parser ):
                       "LEQUALS", "EQUALS", "ERROR", "STRING" ]
 
     RULE_program = 0
-    RULE_newClass = 1
+    RULE_class = 1
     RULE_feature = 2
     RULE_param = 3
     RULE_expr = 4
 
-    ruleNames =  [ "program", "newClass", "feature", "param", "expr" ]
+    ruleNames =  [ "program", "class", "feature", "param", "expr" ]
 
     EOF = Token.EOF
     NEWLINE=1
@@ -189,11 +189,11 @@ class ParserParser ( Parser ):
         def EOF(self):
             return self.getToken(ParserParser.EOF, 0)
 
-        def newClass(self, i:int=None):
+        def class_(self, i:int=None):
             if i is None:
-                return self.getTypedRuleContexts(ParserParser.NewClassContext)
+                return self.getTypedRuleContexts(ParserParser.ClassContext)
             else:
-                return self.getTypedRuleContext(ParserParser.NewClassContext,i)
+                return self.getTypedRuleContext(ParserParser.ClassContext,i)
 
 
         def getRuleIndex(self):
@@ -228,7 +228,7 @@ class ParserParser ( Parser ):
             _la = self._input.LA(1)
             while True:
                 self.state = 10
-                self.newClass()
+                self.class_()
                 self.state = 13 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
@@ -246,7 +246,7 @@ class ParserParser ( Parser ):
         return localctx
 
 
-    class NewClassContext(ParserRuleContext):
+    class ClassContext(ParserRuleContext):
         __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
@@ -285,29 +285,29 @@ class ParserParser ( Parser ):
 
 
         def getRuleIndex(self):
-            return ParserParser.RULE_newClass
+            return ParserParser.RULE_class
 
         def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterNewClass" ):
-                listener.enterNewClass(self)
+            if hasattr( listener, "enterClass" ):
+                listener.enterClass(self)
 
         def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitNewClass" ):
-                listener.exitNewClass(self)
+            if hasattr( listener, "exitClass" ):
+                listener.exitClass(self)
 
         def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitNewClass" ):
-                return visitor.visitNewClass(self)
+            if hasattr( visitor, "visitClass" ):
+                return visitor.visitClass(self)
             else:
                 return visitor.visitChildren(self)
 
 
 
 
-    def newClass(self):
+    def class_(self):
 
-        localctx = ParserParser.NewClassContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 2, self.RULE_newClass)
+        localctx = ParserParser.ClassContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 2, self.RULE_class)
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
@@ -612,16 +612,18 @@ class ParserParser ( Parser ):
 
         def __init__(self, parser, ctx:ParserRuleContext): # actually a ParserParser.ExprContext
             super().__init__(parser)
+            self.left = None # ExprContext
+            self.right = None # ExprContext
             self.copyFrom(ctx)
 
+        def MUL(self):
+            return self.getToken(ParserParser.MUL, 0)
         def expr(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(ParserParser.ExprContext)
             else:
                 return self.getTypedRuleContext(ParserParser.ExprContext,i)
 
-        def MUL(self):
-            return self.getToken(ParserParser.MUL, 0)
 
         def enterRule(self, listener:ParseTreeListener):
             if hasattr( listener, "enterMulExpr" ):
@@ -834,16 +836,18 @@ class ParserParser ( Parser ):
 
         def __init__(self, parser, ctx:ParserRuleContext): # actually a ParserParser.ExprContext
             super().__init__(parser)
+            self.left = None # ExprContext
+            self.right = None # ExprContext
             self.copyFrom(ctx)
 
+        def LT(self):
+            return self.getToken(ParserParser.LT, 0)
         def expr(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(ParserParser.ExprContext)
             else:
                 return self.getTypedRuleContext(ParserParser.ExprContext,i)
 
-        def LT(self):
-            return self.getToken(ParserParser.LT, 0)
 
         def enterRule(self, listener:ParseTreeListener):
             if hasattr( listener, "enterLtExpr" ):
@@ -864,16 +868,18 @@ class ParserParser ( Parser ):
 
         def __init__(self, parser, ctx:ParserRuleContext): # actually a ParserParser.ExprContext
             super().__init__(parser)
+            self.left = None # ExprContext
+            self.right = None # ExprContext
             self.copyFrom(ctx)
 
+        def ADD(self):
+            return self.getToken(ParserParser.ADD, 0)
         def expr(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(ParserParser.ExprContext)
             else:
                 return self.getTypedRuleContext(ParserParser.ExprContext,i)
 
-        def ADD(self):
-            return self.getToken(ParserParser.ADD, 0)
 
         def enterRule(self, listener:ParseTreeListener):
             if hasattr( listener, "enterAddExpr" ):
@@ -1095,16 +1101,18 @@ class ParserParser ( Parser ):
 
         def __init__(self, parser, ctx:ParserRuleContext): # actually a ParserParser.ExprContext
             super().__init__(parser)
+            self.left = None # ExprContext
+            self.right = None # ExprContext
             self.copyFrom(ctx)
 
+        def DIV(self):
+            return self.getToken(ParserParser.DIV, 0)
         def expr(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(ParserParser.ExprContext)
             else:
                 return self.getTypedRuleContext(ParserParser.ExprContext,i)
 
-        def DIV(self):
-            return self.getToken(ParserParser.DIV, 0)
 
         def enterRule(self, listener:ParseTreeListener):
             if hasattr( listener, "enterDivExpr" ):
@@ -1125,16 +1133,18 @@ class ParserParser ( Parser ):
 
         def __init__(self, parser, ctx:ParserRuleContext): # actually a ParserParser.ExprContext
             super().__init__(parser)
+            self.left = None # ExprContext
+            self.right = None # ExprContext
             self.copyFrom(ctx)
 
+        def EQUALS(self):
+            return self.getToken(ParserParser.EQUALS, 0)
         def expr(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(ParserParser.ExprContext)
             else:
                 return self.getTypedRuleContext(ParserParser.ExprContext,i)
 
-        def EQUALS(self):
-            return self.getToken(ParserParser.EQUALS, 0)
 
         def enterRule(self, listener:ParseTreeListener):
             if hasattr( listener, "enterEqualsExpr" ):
@@ -1181,16 +1191,18 @@ class ParserParser ( Parser ):
 
         def __init__(self, parser, ctx:ParserRuleContext): # actually a ParserParser.ExprContext
             super().__init__(parser)
+            self.left = None # ExprContext
+            self.right = None # ExprContext
             self.copyFrom(ctx)
 
+        def LEQUALS(self):
+            return self.getToken(ParserParser.LEQUALS, 0)
         def expr(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(ParserParser.ExprContext)
             else:
                 return self.getTypedRuleContext(ParserParser.ExprContext,i)
 
-        def LEQUALS(self):
-            return self.getToken(ParserParser.LEQUALS, 0)
 
         def enterRule(self, listener:ParseTreeListener):
             if hasattr( listener, "enterLequalExpr" ):
@@ -1291,16 +1303,18 @@ class ParserParser ( Parser ):
 
         def __init__(self, parser, ctx:ParserRuleContext): # actually a ParserParser.ExprContext
             super().__init__(parser)
+            self.left = None # ExprContext
+            self.right = None # ExprContext
             self.copyFrom(ctx)
 
+        def MINUS(self):
+            return self.getToken(ParserParser.MINUS, 0)
         def expr(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(ParserParser.ExprContext)
             else:
                 return self.getTypedRuleContext(ParserParser.ExprContext,i)
 
-        def MINUS(self):
-            return self.getToken(ParserParser.MINUS, 0)
 
         def enterRule(self, listener:ParseTreeListener):
             if hasattr( listener, "enterMinusExpr" ):
@@ -1545,43 +1559,43 @@ class ParserParser ( Parser ):
                 pass
 
             elif la_ == 12:
-                localctx = ParserParser.IdExprContext(self, localctx)
-                self._ctx = localctx
-                _prevctx = localctx
-                self.state = 149
-                self.match(ParserParser.ID)
-                pass
-
-            elif la_ == 13:
                 localctx = ParserParser.IntExprContext(self, localctx)
                 self._ctx = localctx
                 _prevctx = localctx
-                self.state = 150
+                self.state = 149
                 self.match(ParserParser.INT)
                 pass
 
-            elif la_ == 14:
+            elif la_ == 13:
                 localctx = ParserParser.StringExprContext(self, localctx)
                 self._ctx = localctx
                 _prevctx = localctx
-                self.state = 151
+                self.state = 150
                 self.match(ParserParser.STRING)
                 pass
 
-            elif la_ == 15:
+            elif la_ == 14:
                 localctx = ParserParser.TrueExprContext(self, localctx)
                 self._ctx = localctx
                 _prevctx = localctx
-                self.state = 152
+                self.state = 151
                 self.match(ParserParser.TRUE)
                 pass
 
-            elif la_ == 16:
+            elif la_ == 15:
                 localctx = ParserParser.FalseExprContext(self, localctx)
                 self._ctx = localctx
                 _prevctx = localctx
-                self.state = 153
+                self.state = 152
                 self.match(ParserParser.FALSE)
+                pass
+
+            elif la_ == 16:
+                localctx = ParserParser.IdExprContext(self, localctx)
+                self._ctx = localctx
+                _prevctx = localctx
+                self.state = 153
+                self.match(ParserParser.ID)
                 pass
 
 
@@ -1599,6 +1613,7 @@ class ParserParser ( Parser ):
                     la_ = self._interp.adaptivePredict(self._input,17,self._ctx)
                     if la_ == 1:
                         localctx = ParserParser.MulExprContext(self, ParserParser.ExprContext(self, _parentctx, _parentState))
+                        localctx.left = _prevctx
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
                         self.state = 156
                         if not self.precpred(self._ctx, 13):
@@ -1607,11 +1622,12 @@ class ParserParser ( Parser ):
                         self.state = 157
                         self.match(ParserParser.MUL)
                         self.state = 158
-                        self.expr(14)
+                        localctx.right = self.expr(14)
                         pass
 
                     elif la_ == 2:
                         localctx = ParserParser.DivExprContext(self, ParserParser.ExprContext(self, _parentctx, _parentState))
+                        localctx.left = _prevctx
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
                         self.state = 159
                         if not self.precpred(self._ctx, 12):
@@ -1620,11 +1636,12 @@ class ParserParser ( Parser ):
                         self.state = 160
                         self.match(ParserParser.DIV)
                         self.state = 161
-                        self.expr(13)
+                        localctx.right = self.expr(13)
                         pass
 
                     elif la_ == 3:
                         localctx = ParserParser.AddExprContext(self, ParserParser.ExprContext(self, _parentctx, _parentState))
+                        localctx.left = _prevctx
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
                         self.state = 162
                         if not self.precpred(self._ctx, 11):
@@ -1633,11 +1650,12 @@ class ParserParser ( Parser ):
                         self.state = 163
                         self.match(ParserParser.ADD)
                         self.state = 164
-                        self.expr(12)
+                        localctx.right = self.expr(12)
                         pass
 
                     elif la_ == 4:
                         localctx = ParserParser.MinusExprContext(self, ParserParser.ExprContext(self, _parentctx, _parentState))
+                        localctx.left = _prevctx
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
                         self.state = 165
                         if not self.precpred(self._ctx, 10):
@@ -1646,11 +1664,12 @@ class ParserParser ( Parser ):
                         self.state = 166
                         self.match(ParserParser.MINUS)
                         self.state = 167
-                        self.expr(11)
+                        localctx.right = self.expr(11)
                         pass
 
                     elif la_ == 5:
                         localctx = ParserParser.LequalExprContext(self, ParserParser.ExprContext(self, _parentctx, _parentState))
+                        localctx.left = _prevctx
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
                         self.state = 168
                         if not self.precpred(self._ctx, 9):
@@ -1659,11 +1678,12 @@ class ParserParser ( Parser ):
                         self.state = 169
                         self.match(ParserParser.LEQUALS)
                         self.state = 170
-                        self.expr(10)
+                        localctx.right = self.expr(10)
                         pass
 
                     elif la_ == 6:
                         localctx = ParserParser.LtExprContext(self, ParserParser.ExprContext(self, _parentctx, _parentState))
+                        localctx.left = _prevctx
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
                         self.state = 171
                         if not self.precpred(self._ctx, 8):
@@ -1672,11 +1692,12 @@ class ParserParser ( Parser ):
                         self.state = 172
                         self.match(ParserParser.LT)
                         self.state = 173
-                        self.expr(9)
+                        localctx.right = self.expr(9)
                         pass
 
                     elif la_ == 7:
                         localctx = ParserParser.EqualsExprContext(self, ParserParser.ExprContext(self, _parentctx, _parentState))
+                        localctx.left = _prevctx
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
                         self.state = 174
                         if not self.precpred(self._ctx, 7):
@@ -1685,7 +1706,7 @@ class ParserParser ( Parser ):
                         self.state = 175
                         self.match(ParserParser.EQUALS)
                         self.state = 176
-                        self.expr(8)
+                        localctx.right = self.expr(8)
                         pass
 
                     elif la_ == 8:

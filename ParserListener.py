@@ -17,12 +17,12 @@ class ParserListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ParserParser#newClass.
-    def enterNewClass(self, ctx:ParserParser.NewClassContext):
+    # Enter a parse tree produced by ParserParser#class.
+    def enterClass(self, ctx:ParserParser.ClassContext):
         pass
 
-    # Exit a parse tree produced by ParserParser#newClass.
-    def exitNewClass(self, ctx:ParserParser.NewClassContext):
+    # Exit a parse tree produced by ParserParser#class.
+    def exitClass(self, ctx:ParserParser.ClassContext):
         pass
 
 
