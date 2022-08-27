@@ -1,0 +1,13 @@
+class Main {
+    cadena: String;
+    io_input: IO;
+
+    main() : IO {
+        {
+            cadena <- (io_input.in_string());
+            cadena <- (cadena.concat("Add"));
+            io_input.out_string(cadena);
+
+        }
+    };
+};

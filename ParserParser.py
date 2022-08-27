@@ -98,12 +98,14 @@ class ParserParser ( Parser ):
 
     literalNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                     "<INVALID>", "';'", "'true'", "'false'", "'fi'", "'if'", 
-                     "'in'", "'isvoid'", "'let'", "'loop'", "'pool'", "'then'", 
-                     "'else'", "'while'", "'case'", "'esac'", "'new'", "'of'", 
-                     "'not'", "<INVALID>", "'('", "')'", "'{'", "'}'", "':'", 
-                     "'<-'", "'=>'", "'~'", "','", "'.'", "'@'", "'*'", 
-                     "'+'", "'-'", "'/'", "'<'", "'<='", "'='" ]
+                     "<INVALID>", "';'", "<INVALID>", "<INVALID>", "<INVALID>", 
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                     "<INVALID>", "<INVALID>", "<INVALID>", "'('", "')'", 
+                     "'{'", "'}'", "':'", "'<-'", "'=>'", "'~'", "','", 
+                     "'.'", "'@'", "'*'", "'+'", "'-'", "'/'", "'<'", "'<='", 
+                     "'='" ]
 
     symbolicNames = [ "<INVALID>", "NEWLINE", "WS", "SINGLECOMMENT", "MULTICOMMENT", 
                       "INHERITS", "CLASS", "TYPE", "INT", "SEMICOLON", "TRUE", 
@@ -254,30 +256,42 @@ class ParserParser ( Parser ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
+
+        def getRuleIndex(self):
+            return ParserParser.RULE_class
+
+     
+        def copyFrom(self, ctx:ParserRuleContext):
+            super().copyFrom(ctx)
+
+
+
+    class ClassDecContext(ClassContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a ParserParser.ClassContext
+            super().__init__(parser)
+            self.name = None # Token
+            self.inherits = None # Token
+            self.copyFrom(ctx)
+
         def CLASS(self):
             return self.getToken(ParserParser.CLASS, 0)
-
-        def TYPE(self, i:int=None):
-            if i is None:
-                return self.getTokens(ParserParser.TYPE)
-            else:
-                return self.getToken(ParserParser.TYPE, i)
-
         def LBRACE(self):
             return self.getToken(ParserParser.LBRACE, 0)
-
         def RBRACE(self):
             return self.getToken(ParserParser.RBRACE, 0)
-
         def SEMICOLON(self, i:int=None):
             if i is None:
                 return self.getTokens(ParserParser.SEMICOLON)
             else:
                 return self.getToken(ParserParser.SEMICOLON, i)
-
+        def TYPE(self, i:int=None):
+            if i is None:
+                return self.getTokens(ParserParser.TYPE)
+            else:
+                return self.getToken(ParserParser.TYPE, i)
         def INHERITS(self):
             return self.getToken(ParserParser.INHERITS, 0)
-
         def feature(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(ParserParser.FeatureContext)
@@ -285,23 +299,19 @@ class ParserParser ( Parser ):
                 return self.getTypedRuleContext(ParserParser.FeatureContext,i)
 
 
-        def getRuleIndex(self):
-            return ParserParser.RULE_class
-
         def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterClass" ):
-                listener.enterClass(self)
+            if hasattr( listener, "enterClassDec" ):
+                listener.enterClassDec(self)
 
         def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitClass" ):
-                listener.exitClass(self)
+            if hasattr( listener, "exitClassDec" ):
+                listener.exitClassDec(self)
 
         def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitClass" ):
-                return visitor.visitClass(self)
+            if hasattr( visitor, "visitClassDec" ):
+                return visitor.visitClassDec(self)
             else:
                 return visitor.visitChildren(self)
-
 
 
 
@@ -311,11 +321,12 @@ class ParserParser ( Parser ):
         self.enterRule(localctx, 2, self.RULE_class)
         self._la = 0 # Token type
         try:
+            localctx = ParserParser.ClassDecContext(self, localctx)
             self.enterOuterAlt(localctx, 1)
             self.state = 17
             self.match(ParserParser.CLASS)
             self.state = 18
-            self.match(ParserParser.TYPE)
+            localctx.name = self.match(ParserParser.TYPE)
             self.state = 21
             self._errHandler.sync(self)
             _la = self._input.LA(1)
@@ -323,7 +334,7 @@ class ParserParser ( Parser ):
                 self.state = 19
                 self.match(ParserParser.INHERITS)
                 self.state = 20
-                self.match(ParserParser.TYPE)
+                localctx.inherits = self.match(ParserParser.TYPE)
 
 
             self.state = 23
@@ -409,10 +420,10 @@ class ParserParser ( Parser ):
 
         def __init__(self, parser, ctx:ParserRuleContext): # actually a ParserParser.FeatureContext
             super().__init__(parser)
+            self.name = None # Token
+            self.parameter = None # ParamContext
             self.copyFrom(ctx)
 
-        def ID(self):
-            return self.getToken(ParserParser.ID, 0)
         def LPAREN(self):
             return self.getToken(ParserParser.LPAREN, 0)
         def RPAREN(self):
@@ -428,6 +439,8 @@ class ParserParser ( Parser ):
 
         def RBRACE(self):
             return self.getToken(ParserParser.RBRACE, 0)
+        def ID(self):
+            return self.getToken(ParserParser.ID, 0)
         def param(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(ParserParser.ParamContext)
@@ -469,7 +482,7 @@ class ParserParser ( Parser ):
                 localctx = ParserParser.MethodFeatureContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
                 self.state = 35
-                self.match(ParserParser.ID)
+                localctx.name = self.match(ParserParser.ID)
                 self.state = 36
                 self.match(ParserParser.LPAREN)
                 self.state = 47
@@ -477,7 +490,7 @@ class ParserParser ( Parser ):
                 _la = self._input.LA(1)
                 while _la==ParserParser.ID:
                     self.state = 37
-                    self.param()
+                    localctx.parameter = self.param()
                     self.state = 42
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
@@ -935,90 +948,6 @@ class ParserParser ( Parser ):
                 return visitor.visitChildren(self)
 
 
-    class DotExprContext(ExprContext):
-
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a ParserParser.ExprContext
-            super().__init__(parser)
-            self.copyFrom(ctx)
-
-        def expr(self, i:int=None):
-            if i is None:
-                return self.getTypedRuleContexts(ParserParser.ExprContext)
-            else:
-                return self.getTypedRuleContext(ParserParser.ExprContext,i)
-
-        def PERIOD(self):
-            return self.getToken(ParserParser.PERIOD, 0)
-        def ID(self):
-            return self.getToken(ParserParser.ID, 0)
-        def LPAREN(self):
-            return self.getToken(ParserParser.LPAREN, 0)
-        def RPAREN(self):
-            return self.getToken(ParserParser.RPAREN, 0)
-        def AT(self):
-            return self.getToken(ParserParser.AT, 0)
-        def TYPE(self):
-            return self.getToken(ParserParser.TYPE, 0)
-        def COMMA(self, i:int=None):
-            if i is None:
-                return self.getTokens(ParserParser.COMMA)
-            else:
-                return self.getToken(ParserParser.COMMA, i)
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterDotExpr" ):
-                listener.enterDotExpr(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitDotExpr" ):
-                listener.exitDotExpr(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitDotExpr" ):
-                return visitor.visitDotExpr(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-    class IdParenExprContext(ExprContext):
-
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a ParserParser.ExprContext
-            super().__init__(parser)
-            self.copyFrom(ctx)
-
-        def ID(self):
-            return self.getToken(ParserParser.ID, 0)
-        def LPAREN(self):
-            return self.getToken(ParserParser.LPAREN, 0)
-        def RPAREN(self):
-            return self.getToken(ParserParser.RPAREN, 0)
-        def expr(self, i:int=None):
-            if i is None:
-                return self.getTypedRuleContexts(ParserParser.ExprContext)
-            else:
-                return self.getTypedRuleContext(ParserParser.ExprContext,i)
-
-        def COMMA(self, i:int=None):
-            if i is None:
-                return self.getTokens(ParserParser.COMMA)
-            else:
-                return self.getToken(ParserParser.COMMA, i)
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterIdParenExpr" ):
-                listener.enterIdParenExpr(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitIdParenExpr" ):
-                listener.exitIdParenExpr(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitIdParenExpr" ):
-                return visitor.visitIdParenExpr(self)
-            else:
-                return visitor.visitChildren(self)
-
-
     class AssignExprContext(ExprContext):
 
         def __init__(self, parser, ctx:ParserRuleContext): # actually a ParserParser.ExprContext
@@ -1138,6 +1067,55 @@ class ParserParser ( Parser ):
                 return visitor.visitChildren(self)
 
 
+    class MethodDotExprContext(ExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a ParserParser.ExprContext
+            super().__init__(parser)
+            self.left = None # ExprContext
+            self.name = None # Token
+            self.first = None # ExprContext
+            self.second = None # ExprContext
+            self.copyFrom(ctx)
+
+        def PERIOD(self):
+            return self.getToken(ParserParser.PERIOD, 0)
+        def LPAREN(self):
+            return self.getToken(ParserParser.LPAREN, 0)
+        def RPAREN(self):
+            return self.getToken(ParserParser.RPAREN, 0)
+        def expr(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(ParserParser.ExprContext)
+            else:
+                return self.getTypedRuleContext(ParserParser.ExprContext,i)
+
+        def ID(self):
+            return self.getToken(ParserParser.ID, 0)
+        def AT(self):
+            return self.getToken(ParserParser.AT, 0)
+        def TYPE(self):
+            return self.getToken(ParserParser.TYPE, 0)
+        def COMMA(self, i:int=None):
+            if i is None:
+                return self.getTokens(ParserParser.COMMA)
+            else:
+                return self.getToken(ParserParser.COMMA, i)
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterMethodDotExpr" ):
+                listener.enterMethodDotExpr(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitMethodDotExpr" ):
+                listener.exitMethodDotExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitMethodDotExpr" ):
+                return visitor.visitMethodDotExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
+
     class DivExprContext(ExprContext):
 
         def __init__(self, parser, ctx:ParserRuleContext): # actually a ParserParser.ExprContext
@@ -1206,6 +1184,7 @@ class ParserParser ( Parser ):
 
         def __init__(self, parser, ctx:ParserRuleContext): # actually a ParserParser.ExprContext
             super().__init__(parser)
+            self.right = None # Token
             self.copyFrom(ctx)
 
         def NEW(self):
@@ -1224,6 +1203,48 @@ class ParserParser ( Parser ):
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitNewExpr" ):
                 return visitor.visitNewExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+    class MethodParenExprContext(ExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a ParserParser.ExprContext
+            super().__init__(parser)
+            self.name = None # Token
+            self.first = None # ExprContext
+            self.second = None # ExprContext
+            self.copyFrom(ctx)
+
+        def LPAREN(self):
+            return self.getToken(ParserParser.LPAREN, 0)
+        def RPAREN(self):
+            return self.getToken(ParserParser.RPAREN, 0)
+        def ID(self):
+            return self.getToken(ParserParser.ID, 0)
+        def expr(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(ParserParser.ExprContext)
+            else:
+                return self.getTypedRuleContext(ParserParser.ExprContext,i)
+
+        def COMMA(self, i:int=None):
+            if i is None:
+                return self.getTokens(ParserParser.COMMA)
+            else:
+                return self.getToken(ParserParser.COMMA, i)
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterMethodParenExpr" ):
+                listener.enterMethodParenExpr(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitMethodParenExpr" ):
+                listener.exitMethodParenExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitMethodParenExpr" ):
+                return visitor.visitMethodParenExpr(self)
             else:
                 return visitor.visitChildren(self)
 
@@ -1401,11 +1422,11 @@ class ParserParser ( Parser ):
                 pass
 
             elif la_ == 2:
-                localctx = ParserParser.IdParenExprContext(self, localctx)
+                localctx = ParserParser.MethodParenExprContext(self, localctx)
                 self._ctx = localctx
                 _prevctx = localctx
                 self.state = 74
-                self.match(ParserParser.ID)
+                localctx.name = self.match(ParserParser.ID)
                 self.state = 75
                 self.match(ParserParser.LPAREN)
                 self.state = 86
@@ -1413,7 +1434,7 @@ class ParserParser ( Parser ):
                 _la = self._input.LA(1)
                 while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << ParserParser.INT) | (1 << ParserParser.TRUE) | (1 << ParserParser.FALSE) | (1 << ParserParser.IF) | (1 << ParserParser.ISVOID) | (1 << ParserParser.LET) | (1 << ParserParser.WHILE) | (1 << ParserParser.NEW) | (1 << ParserParser.NOT) | (1 << ParserParser.ID) | (1 << ParserParser.LPAREN) | (1 << ParserParser.LBRACE) | (1 << ParserParser.NEG) | (1 << ParserParser.STRING))) != 0):
                     self.state = 76
-                    self.expr(0)
+                    localctx.first = self.expr(0)
                     self.state = 81
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
@@ -1421,7 +1442,7 @@ class ParserParser ( Parser ):
                         self.state = 77
                         self.match(ParserParser.COMMA)
                         self.state = 78
-                        self.expr(0)
+                        localctx.second = self.expr(0)
                         self.state = 83
                         self._errHandler.sync(self)
                         _la = self._input.LA(1)
@@ -1555,7 +1576,7 @@ class ParserParser ( Parser ):
                 self.state = 137
                 self.match(ParserParser.NEW)
                 self.state = 138
-                self.match(ParserParser.TYPE)
+                localctx.right = self.match(ParserParser.TYPE)
                 pass
 
             elif la_ == 8:
@@ -1752,7 +1773,8 @@ class ParserParser ( Parser ):
                         pass
 
                     elif la_ == 8:
-                        localctx = ParserParser.DotExprContext(self, ParserParser.ExprContext(self, _parentctx, _parentState))
+                        localctx = ParserParser.MethodDotExprContext(self, ParserParser.ExprContext(self, _parentctx, _parentState))
+                        localctx.left = _prevctx
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
                         self.state = 177
                         if not self.precpred(self._ctx, 22):
@@ -1771,7 +1793,7 @@ class ParserParser ( Parser ):
                         self.state = 182
                         self.match(ParserParser.PERIOD)
                         self.state = 183
-                        self.match(ParserParser.ID)
+                        localctx.name = self.match(ParserParser.ID)
                         self.state = 184
                         self.match(ParserParser.LPAREN)
                         self.state = 195
@@ -1779,7 +1801,7 @@ class ParserParser ( Parser ):
                         _la = self._input.LA(1)
                         while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << ParserParser.INT) | (1 << ParserParser.TRUE) | (1 << ParserParser.FALSE) | (1 << ParserParser.IF) | (1 << ParserParser.ISVOID) | (1 << ParserParser.LET) | (1 << ParserParser.WHILE) | (1 << ParserParser.NEW) | (1 << ParserParser.NOT) | (1 << ParserParser.ID) | (1 << ParserParser.LPAREN) | (1 << ParserParser.LBRACE) | (1 << ParserParser.NEG) | (1 << ParserParser.STRING))) != 0):
                             self.state = 185
-                            self.expr(0)
+                            localctx.first = self.expr(0)
                             self.state = 190
                             self._errHandler.sync(self)
                             _la = self._input.LA(1)
@@ -1787,7 +1809,7 @@ class ParserParser ( Parser ):
                                 self.state = 186
                                 self.match(ParserParser.COMMA)
                                 self.state = 187
-                                self.expr(0)
+                                localctx.second = self.expr(0)
                                 self.state = 192
                                 self._errHandler.sync(self)
                                 _la = self._input.LA(1)

@@ -4,13 +4,14 @@ from Compiler import Compiler, MyVisitor, MyListener
 
 class MainWindow(qtw.QWidget):
 
-    def __init__(self, file, errors):
+    def __init__(self, file):
         super().__init__()
 
-        self.errors = errors
+        self.errors = []
+        self.currentFile = file
 
         # text_edit = qtw.QPlainTextEdit()
-        text=open(file).read()
+        self.text=open(file).read()
         # text_edit.setPlainText(text)
 
         # Title
@@ -28,6 +29,19 @@ class MainWindow(qtw.QWidget):
         self.layout().addWidget(self.label_1)
 
         # Spin Box
+        self.my_textFile =  qtw.QTextEdit(self
+        )
+        self.my_textFile.resize(1380, 30)
+        self.my_textFile.move(10, 0)
+
+        self.my_textFile.setPlainText(file)
+
+        # Button
+        self.my_buttonFile = qtw.QPushButton("Abrir archivo", clicked = lambda: abrirArchivo())
+        
+        self.layout().addWidget(self.my_buttonFile)
+        
+        # Spin Box
         self.my_text =  qtw.QTextEdit(self,
             lineWrapMode=qtw.QTextEdit.setFixedWidth,
             lineWrapColumnOrWidth=50,
@@ -35,7 +49,7 @@ class MainWindow(qtw.QWidget):
             readOnly=False,
         )
 
-        self.my_text.setPlainText(text)
+        self.my_text.setPlainText(self.text)
 
         self.layout().addWidget(self.my_text)
 
@@ -50,30 +64,34 @@ class MainWindow(qtw.QWidget):
         f.setPointSize(13)
         self.label_1.setFont(f)
         self.my_text.setFont(f)
+        self.my_textFile.setFont(f)
+        self.my_buttonFile.setFont(f)
         self.my_button.setFont(f)
         self.label_2.setFont(f)
 
         self.layout().addWidget(self.label_2)
 
         def compilar():
-            f = open(file, "w")
+            f = open(self.currentFile, "w")
             f.write(self.my_text.toPlainText())
             f.close()
             compiler = Compiler()
-            compiler.compile(file)
+            compiler.compile(self.currentFile)
             errorText = 'Consola\n'
             for i in compiler.errors:
                 errorText += i + '\n'
             self.label_2.setText(errorText)
 
-        def getText():
-            return self.my_text.toPlainText()
 
-
+        def abrirArchivo():
+            self.text=open(self.my_textFile.toPlainText()).read()
+            self.my_text.setPlainText(self.text)
+            self.currentFile = self.my_textFile.toPlainText()
+        
         self.show()
 
 app = qtw.QApplication([])
-mw = MainWindow('test2.cl', ['Error1', 'Error2'])
+mw = MainWindow('test2.cl')
 
 # run
 app.exec_()

@@ -14,6 +14,7 @@ class SymbolTable:
     def __init__(self):
         self.table = []
         self.scopes = [GLOBAL]
+        self.errors = []
 
     def push_scope(self, scope):
         self.scopes.append(scope)
@@ -23,8 +24,8 @@ class SymbolTable:
 
     def insert(self, name, typ, kind, scope, line, value=None):
         scope_variables = filter(lambda x: x['scope'] == scope, self.table)
-        if (name, kind) in map(lambda x: (x['name'], x['kind']), scope_variables):
-            error(KIND_TABLE_ERROR[kind] + ' ' + name + ' ya declarada ', line)
+        if (name, kind, scope) in map(lambda x: (x['name'], x['kind'], x['scope']), scope_variables) and kind != 'parameter':
+            self.errors.append(error(KIND_TABLE_ERROR[kind] + ' ' + name + ' ya fue declarada ', line))
 
         self.table.append({'name': name, 'type': typ, 'kind': kind, 'scope': scope, 'line': line, 'value': value})
 
@@ -37,7 +38,7 @@ class SymbolTable:
             if variable['name'] == name:
                 return variable
 
-        error('Variable ' + name + ' no declarada', line)
+        self.errors.append(error('Variable ' + name + ' no declarada', line))
 
     def set(self, name, line, value):
         for scope in reversed(self.scopes):
@@ -46,7 +47,7 @@ class SymbolTable:
                     row['value'] = value
                     return
 
-        error('Variable ' + name + ' no declarada', line)
+        self.errors.append(error('Variable ' + name + ' no declarada', line))
 
     def get_scope(self):
         return self.scopes[-1]

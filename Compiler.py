@@ -32,18 +32,166 @@ class Compiler(object):
         #Arbol
         #os.system('grun Parser program test2.cl -gui -tokens')
 
+        print("\n\n")
+
         # Tabla
         printer = MyListener()
         walker = ParseTreeWalker()
+
+        # Predefinir clases IO, Int, Bool, String
+        predefined = [
+            {
+                'name': 'IO',
+                'type': 'Object',
+                'kind': 'class',
+                'scope': 'Global',
+                'line': 0,
+                'value': ''
+            },
+            {
+                'name': 'Bool',
+                'type': 'Object',
+                'kind': 'class',
+                'scope': 'Global',
+                'line': 0,
+                'value': ''
+            },
+            {
+                'name': 'Int',
+                'type': 'Object',
+                'kind': 'class',
+                'scope': 'Global',
+                'line': 0,
+                'value': ''
+            },
+            {
+                'name': 'String',
+                'type': 'Object',
+                'kind': 'class',
+                'scope': 'Global',
+                'line': 0,
+                'value': ''
+            },
+            {
+                'name': 'out_string',
+                'type': 'SELF_TYPE',
+                'kind': 'method',
+                'scope': 'IO',
+                'line': 0,
+                'value': ''
+            },
+            {
+                'name': 'string',
+                'type': 'String',
+                'kind': 'parameter',
+                'scope': 'out_string',
+                'line': 0,
+                'value': ''
+            },
+            {
+                'name': 'in_string',
+                'type': 'String',
+                'kind': 'method',
+                'scope': 'IO',
+                'line': 0,
+                'value': ''
+            },
+            {
+                'name': 'out_int',
+                'type': 'SELF_TYPE',
+                'kind': 'method',
+                'scope': 'IO',
+                'line': 0,
+                'value': ''
+            },
+            {
+                'name': 'number',
+                'type': 'Int',
+                'kind': 'parameter',
+                'scope': 'out_int',
+                'line': 0,
+                'value': ''
+            },
+            {
+                'name': 'in_int',
+                'type': 'Int',
+                'kind': 'method',
+                'scope': 'IO',
+                'line': 0,
+                'value': ''
+            },
+            {
+                'name': 'length',
+                'type': 'Int',
+                'kind': 'method',
+                'scope': 'String',
+                'line': 0,
+                'value': ''
+            },
+            {
+                'name': 'concat',
+                'type': 'String',
+                'kind': 'method',
+                'scope': 'String',
+                'line': 0,
+                'value': ''
+            },
+            {
+                'name': 's',
+                'type': 'String',
+                'kind': 'parameter',
+                'scope': 'concat',
+                'line': 0,
+                'value': ''
+            },
+            {
+                'name': 'substr',
+                'type': 'String',
+                'kind': 'method',
+                'scope': 'String',
+                'line': 0,
+                'value': ''
+            },
+            {
+                'name': 'i',
+                'type': 'Int',
+                'kind': 'parameter',
+                'scope': 'substr',
+                'line': 0,
+                'value': ''
+            },
+            {
+                'name': 'l',
+                'type': 'Int',
+                'kind': 'parameter',
+                'scope': 'substr',
+                'line': 0,
+                'value': ''
+            },
+        ]
+        printer.symbol_table.table = predefined
+
         walker.walk(printer, tree)
         
         table = printer.getTable()
+        self.errors += printer.symbol_table.errors
 
         # Errores semanticos
-        print("\n\n")
         visitor = MyVisitor(table)
         visitor.visit(tree)
         self.errors += visitor.errors
+
+        if visitor.hasMain == False:
+            self.errors.append("ERROR: No se encontro la clase Main\n")
+            print("ERROR: No se encontro la clase Main\n")
+
+        if visitor.hasMainMethod == False:
+            self.errors.append("ERROR: No se encontro el metodo main\n")
+            print("ERROR: No se encontro el metodo main\n")
+
+        if len(self.errors) == 0:
+            self.errors.append("Analizado sin errores!")
+            print("Analizado sin errores!")
 
         finalTable = SymbolTable()
         finalTable.table = visitor.table
@@ -74,9 +222,9 @@ class MyListener(ParserListener):
     def insert_class(self, ctx: ParserParser.ClassContext):
         children = list(map(lambda x: x.getText(), ctx.children))
         name = children[1]
-        kind = CLASS
+        kind = 'class'
         ind = indx(children, 'inherits')
-        typ = children[ind + 1] if ind != -1 else 'Object'
+        typ = children[ind + 1] if ind != -1 and (children[ind + 1], 'class') in map(lambda x: (x['name'], x['kind']), self.symbol_table.table) else 'Object'
         line = ctx.children[0].symbol.line
         scope = self.symbol_table.get_scope()
         self.symbol_table.insert(name, typ, kind, scope, line)
@@ -110,13 +258,13 @@ class MyListener(ParserListener):
         self.symbol_table.insert(name, typ, kind, scope, line)
 
     # Enter a parse tree produced by ParserParser#class.
-    def enterClass(self, ctx: ParserParser.ClassContext):
+    def enterClassDec(self, ctx):
         self.insert_class(ctx)
         self.symbol_table.push_scope(ctx.children[1].getText())
         self.insert_self(ctx.children[0].symbol.line)
 
     # Exit a parse tree produced by ParserParser#class.
-    def exitClass(self, ctx: ParserParser.ClassContext):
+    def exitClassDec(self, ctx):
         self.symbol_table.pop_scope()
 
     # Enter a parse tree produced by ParserParser#feature.
@@ -126,14 +274,19 @@ class MyListener(ParserListener):
     def enterAssignFeature(self, ctx: ParserParser.AssignFeatureContext):
         self.insert_feature(ctx)
 
+    
     # Exit a parse tree produced by ParserParser#feature.
-    def exitFeature(self, ctx: ParserParser.FeatureContext):
+    def exitMethodFeature(self, ctx):
+        if ctx.children[1].getText() != ':':
+            self.symbol_table.pop_scope()
+
+    def exitAssignFeature(self, ctx):
         if ctx.children[1].getText() != ':':
             self.symbol_table.pop_scope()
 
     # Enter a parse tree produced by ParserParser#Param.
     def enterParam(self, ctx: ParserParser.ParamContext):
-        self.insert_Param(ctx)
+        self.insert_param(ctx)
 
     # Enter a parse tree produced by ParserParser#expr.
     def enterExpr(self, ctx: ParserParser.ExprContext):
@@ -147,6 +300,14 @@ class MyVisitor(ParserVisitor):
     def __init__(self, table):
         self.table = table
         self.errors = []
+        self.hasMain = False
+        self.hasMainMethod = False
+        self.current_scope = 'Global'
+        self.types = ['Bool', 'Int', 'String', 'IO']
+
+        for i in table:
+            if i['kind'] == 'class' and i['name'] not in self.types:
+                self.types.append(i['name'])
     
     def getTable(self):
         print(str(self.table))
@@ -179,19 +340,20 @@ class MyVisitor(ParserVisitor):
                     return False
     
     def checkIntOperation(self, ctx, bypass=False):
-        if '<-' in ctx.getText() and bypass == False:
-            self.visitAssignExpr(ctx, True)
-            return
-        if '<-' in ctx.left.getText():
+        if '<-' in ctx.getText():
+            if bypass == False:
+                self.visitAssignExpr(ctx, True)
+                return
 
-            leftSide = ctx.left.getText().split('<-')
-            id = self.getAttribute(leftSide[1])
-            if id != None:
-                l = id['type']
-            elif leftSide[1].isdigit():
-                l = 'Int'
-            else: 
-                l = 'Error'
+            else:
+                leftSide = ctx.left.getText().split('<-')
+                id = self.getAttribute(leftSide[1])
+                if id != None:
+                    l = id['type']
+                elif leftSide[1].isdigit():
+                    l = 'Int'
+                else: 
+                    l = 'Error'
         else:
             l = self.visit(ctx.left)
 
@@ -220,6 +382,40 @@ class MyVisitor(ParserVisitor):
                     return True
                 else:
                     return False
+
+
+    #Visits
+    def visitClassDec(self, ctx):
+        if ctx.name.text == 'Main':
+            self.hasMain = True
+            if ctx.inherits != None:
+                self.errors.append("ERROR: La clase Main no puede heredar\n")
+                print("ERROR: La clase Main no puede heredar\n")
+                return self.visitChildren(ctx)
+        if ctx.inherits != None:
+            ''' Herencia multiple
+            if ',' in ctx.inherits.text or '.' in ctx.inherits.text:
+                self.errors.append("ERROR: No se permite la herencia multiple o recursiva\n\tLinea [%s:%s] \n\t\t%s" % (ctx.start.line, ctx.start.column, ctx.getText()))
+                print("ERROR: No se permite la herencia multiple o recursiva\n\tLinea [%s:%s] \n\t\t%s" % (ctx.start.line, ctx.start.column, ctx.getText()))
+                return self.visitChildren(ctx)
+                '''
+            if ctx.inherits.text not in self.types:
+                self.errors.append("ERROR: No se encontro la herencia '%s'\n\tLinea [%s:%s] \n\t\t%s" % (ctx.inherits.text, ctx.start.line, ctx.start.column, 'class ' + ctx.name.text + ' inherits ' + ctx.inherits.text))
+                print("ERROR: No se encontro la herencia '%s'\n\tLinea [%s:%s] \n\t\t%s" % (ctx.inherits.text, ctx.start.line, ctx.start.column, 'class ' + ctx.name.text + ' inherits ' + ctx.inherits.text))
+
+        self.current_scope = ctx.name.text
+        self.visitChildren(ctx)
+        self.current_scope = 'Global'
+        return 
+            
+
+    def visitMethodFeature(self, ctx):
+        if ctx.name.text == 'main':
+            self.hasMainMethod = True
+            if ctx.parameter != None:
+                self.errors.append("ERROR: El metodo main no puede recibir parametros\n")
+                print("ERROR: El metodo main no puede recibir parametros\n")
+        return self.visitChildren(ctx)
 
     def visitIdExpr(self, ctx:ParserParser.IdExprContext):
         return 'ID'
@@ -346,6 +542,10 @@ class MyVisitor(ParserVisitor):
             right = expression[1]
 
             id = self.getAttribute(left)
+            if id == None:
+                print("ERROR: No se declaro la variable '%s'\n\tLinea [%s:%s] \n\t\t%s" % (left, ctx.start.line, ctx.start.column, ctx.getText()))
+                self.errors.append("ERROR: No se declaro la variable '%s'\n\tLinea [%s:%s] \n\t\t%s" % (left, ctx.start.line, ctx.start.column, ctx.getText()))
+                return
             l = id['type']
 
             if any(op in right for op in operaciones):
@@ -363,8 +563,17 @@ class MyVisitor(ParserVisitor):
                 r = 'Error'
         else:
             r = self.visit(ctx.right)
+            if r == None and len(ctx.right.children) > 1:
+                for i in ctx.right.children:
+                    temp = self.visit(i)
+                    if temp != None:
+                        r = temp
 
             id = self.getAttribute(ctx.left.text)
+            if id == None:
+                print("ERROR: No se declaro la variable '%s'\n\tLinea [%s:%s] \n\t\t%s" % (ctx.left.text, ctx.start.line, ctx.start.column, ctx.getText()))
+                self.errors.append("ERROR: No se declaro la variable '%s'\n\tLinea [%s:%s] \n\t\t%s" % (ctx.left.text, ctx.start.line, ctx.start.column, ctx.getText()))
+                return
             l = id['type']
 
             if any(op in ctx.right.getText() for op in operaciones):
@@ -377,22 +586,119 @@ class MyVisitor(ParserVisitor):
             r = id['type']
 
         if (l != r):
-                print("ERROR: No corresponden los tipos de la asignacion\n\tLinea [%s:%s] \n\t\t%s" % (ctx.start.line, ctx.start.column, ctx.getText()))
-                self.errors.append("ERROR: No corresponden los tipos de la asignacion\n\tLinea [%s:%s] \n\t\t%s" % (ctx.start.line, ctx.start.column, ctx.getText()))
+
+            print("ERROR: No corresponden los tipos de la asignacion\n\tLinea [%s:%s] \n\t\t%s" % (ctx.start.line, ctx.start.column, ctx.getText()))
+            self.errors.append("ERROR: No corresponden los tipos de la asignacion\n\tLinea [%s:%s] \n\t\t%s" % (ctx.start.line, ctx.start.column, ctx.getText()))
         
         index = [ x['name'] for x in self.table ].index(ctx.left.text)
         self.table[index]['value'] = ctx.right.getText()
 
 
     def visitAssignFeature(self, ctx:ParserParser.AssignFeatureContext):
-        if (len(ctx.right.getText()) > 0):
+        if (ctx.right != None):
+            if (len(ctx.right.getText()) > 0):
 
-            l = ctx.left.text
-            r = self.visit(ctx.right)
+                l = ctx.left.text
+                r = self.visit(ctx.right)
 
-            if (l != r):
-                    print("ERROR: No corresponden los tipos de la asignacion\n\tLinea [%s:%s] \n\t\t%s" % (ctx.start.line, ctx.start.column, ctx.getText()))
-                    self.errors.append("ERROR: No corresponden los tipos de la asignacion\n\tLinea [%s:%s] \n\t\t%s" % (ctx.start.line, ctx.start.column, ctx.getText()))
+                if (l != r):
+                        print("ERROR: No corresponden los tipos de la asignacion\n\tLinea [%s:%s] \n\t\t%s" % (ctx.start.line, ctx.start.column, ctx.getText()))
+                        self.errors.append("ERROR: No corresponden los tipos de la asignacion\n\tLinea [%s:%s] \n\t\t%s" % (ctx.start.line, ctx.start.column, ctx.getText()))
+        return self.visitChildren(ctx)
+
+    def visitNewExpr(self, ctx):
+        return ctx.right.text
+        
+    def visitMethodDotExpr(self, ctx):
+
+        exprType = 'Error'
+        
+        expr = self.getAttribute(ctx.left.getText())
+        if expr != None:
+            exprType = expr['type']
+
+        else:
+            exprT = self.visit(ctx.left)
+            if exprT == None:
+                for i in ctx.left.children:
+                    temp = self.visit(i)
+                    if temp != None:
+                        exprType = temp
+
+
+
+        attr = self.getAttribute(exprType)
+        if attr != None:
+            methodType = list(filter(lambda x: (x['name'] == ctx.name.text) and ((x['scope'] == exprType) or x['scope'] == attr['type']), self.table))
+        else:
+            methodType = list(filter(lambda x: (x['name'] == ctx.name.text) and (x['scope'] == exprType), self.table))
+        if len(methodType) > 0: 
+            methodType = methodType[0]['type']
+            if methodType == 'Object':
+                methodType = exprType
+        
+            if methodType == 'SELF_TYPE':
+                methodType = exprType
+            return methodType
+         
 
     
+    def visitMethodParenExpr(self, ctx):
+        attr = self.getAttribute(self.current_scope)
+        if attr != None:
+            methodType = list(filter(lambda x: (x['name'] == ctx.name.text) and ((x['scope'] == self.current_scope) or x['scope'] == attr['type']), self.table))
+        else:
+            methodType = list(filter(lambda x: (x['name'] == ctx.name.text) and (x['scope'] == self.current_scope), self.table))
+        methodType = methodType[0]['type']
+        print(methodType)
 
+        if (ctx.name.text , 'method', self.current_scope) not in map(lambda x: (x['name'], x['kind'], x['scope']), self.table):
+            
+            if attr != None:
+                if (ctx.name.text, 'method', attr['type']) not in map(lambda x: (x['name'], x['kind'], x['scope']), self.table):
+                    print("ERROR: No se encontro el metodo '%s'\n\tLinea [%s:%s] \n\t\t%s" % (ctx.name.text, ctx.start.line, ctx.start.column, ctx.getText()))
+                    self.errors.append("ERROR: No se encontro el metodo '%s'\n\tLinea [%s:%s] \n\t\t%s" % (ctx.name.text, ctx.start.line, ctx.start.column, ctx.getText()))
+                    self.visitChildren(ctx)
+                    return methodType
+
+        paramFound = list(filter(lambda x: x['scope'] == ctx.name.text, self.table))
+        if len(paramFound) != 0 and ctx.first != None:
+            indexStart = ctx.getText().index('(')
+            if indexStart != -1:
+                params = ctx.getText()[indexStart+1:-1].split(',')
+                if len(params) != len(paramFound):
+                    
+                    print("ERROR: Cantidad de argumentos incorrecta\n\tLinea [%s:%s] \n\t\t%s" % (ctx.start.line, ctx.start.column, ctx.getText()))
+                    self.errors.append("ERROR: Cantidad de argumentos incorrecta\n\tLinea [%s:%s] \n\t\t%s" % (ctx.start.line, ctx.start.column, ctx.getText()))
+                    self.visitChildren(ctx)
+                    return methodType
+                paramNodes = []
+                i = 0
+                index = -2
+                while i != len(paramFound):
+                    paramNodes.append(ctx.children[index])
+                    index -= 2
+                    i += 1
+                paramNodes.reverse()
+                paramTypes = []
+                for i in paramNodes:
+                    val = i.getText()
+                    vType = 'Error'
+                    if val.isdigit():
+                        vType = "Int"
+                    elif val == 'true' or val == 'TRUE' or val == 'false' or val == 'FALSE':
+                        vType = "Bool"
+                    elif val.count('"') == 2:
+                        vType = "String"
+                    paramTypes.append(vType)
+
+                expectedTypes = list(map(lambda x: x['type'], paramFound))
+                if expectedTypes != paramTypes:
+                    print("ERROR: Tipo(s) de argumentos no coinciden con la definicion del metodo\n\tLinea [%s:%s] \n\t\t%s" % (ctx.start.line, ctx.start.column, ctx.getText()))
+                    self.errors.append("ERROR: Tipo(s) de argumentos no coinciden con la definicion del metodo\n\tLinea [%s:%s] \n\t\t%s" % (ctx.start.line, ctx.start.column, ctx.getText()))
+        self.visitChildren(ctx)
+        return methodType
+    
+
+main = Compiler()
+main.compile('test2.cl')

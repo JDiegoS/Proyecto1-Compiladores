@@ -14,8 +14,8 @@ class ParserVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ParserParser#class.
-    def visitClass(self, ctx:ParserParser.ClassContext):
+    # Visit a parse tree produced by ParserParser#ClassDec.
+    def visitClassDec(self, ctx:ParserParser.ClassDecContext):
         return self.visitChildren(ctx)
 
 
@@ -84,16 +84,6 @@ class ParserVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ParserParser#DotExpr.
-    def visitDotExpr(self, ctx:ParserParser.DotExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ParserParser#IdParenExpr.
-    def visitIdParenExpr(self, ctx:ParserParser.IdParenExprContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by ParserParser#AssignExpr.
     def visitAssignExpr(self, ctx:ParserParser.AssignExprContext):
         return self.visitChildren(ctx)
@@ -114,6 +104,11 @@ class ParserVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by ParserParser#MethodDotExpr.
+    def visitMethodDotExpr(self, ctx:ParserParser.MethodDotExprContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by ParserParser#DivExpr.
     def visitDivExpr(self, ctx:ParserParser.DivExprContext):
         return self.visitChildren(ctx)
@@ -126,6 +121,11 @@ class ParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by ParserParser#NewExpr.
     def visitNewExpr(self, ctx:ParserParser.NewExprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by ParserParser#MethodParenExpr.
+    def visitMethodParenExpr(self, ctx:ParserParser.MethodParenExprContext):
         return self.visitChildren(ctx)
 
 

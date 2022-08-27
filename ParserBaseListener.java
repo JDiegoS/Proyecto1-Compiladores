@@ -27,13 +27,13 @@ public class ParserBaseListener implements ParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterClass(ParserParser.ClassContext ctx) { }
+	@Override public void enterClassDec(ParserParser.ClassDecContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitClass(ParserParser.ClassContext ctx) { }
+	@Override public void exitClassDec(ParserParser.ClassDecContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -195,30 +195,6 @@ public class ParserBaseListener implements ParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDotExpr(ParserParser.DotExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitDotExpr(ParserParser.DotExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterIdParenExpr(ParserParser.IdParenExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitIdParenExpr(ParserParser.IdParenExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterAssignExpr(ParserParser.AssignExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -267,6 +243,18 @@ public class ParserBaseListener implements ParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterMethodDotExpr(ParserParser.MethodDotExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMethodDotExpr(ParserParser.MethodDotExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterDivExpr(ParserParser.DivExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -298,6 +286,18 @@ public class ParserBaseListener implements ParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitNewExpr(ParserParser.NewExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterMethodParenExpr(ParserParser.MethodParenExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMethodParenExpr(ParserParser.MethodParenExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

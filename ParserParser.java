@@ -33,11 +33,11 @@ public class ParserParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, null, null, null, null, null, null, null, null, "';'", "'true'", 
-			"'false'", "'fi'", "'if'", "'in'", "'isvoid'", "'let'", "'loop'", "'pool'", 
-			"'then'", "'else'", "'while'", "'case'", "'esac'", "'new'", "'of'", "'not'", 
-			null, "'('", "')'", "'{'", "'}'", "':'", "'<-'", "'=>'", "'~'", "','", 
-			"'.'", "'@'", "'*'", "'+'", "'-'", "'/'", "'<'", "'<='", "'='"
+			null, null, null, null, null, null, null, null, null, "';'", null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, "'('", "')'", "'{'", "'}'", "':'", "'<-'", "'=>'", 
+			"'~'", "','", "'.'", "'@'", "'*'", "'+'", "'-'", "'/'", "'<'", "'<='", 
+			"'='"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
@@ -161,16 +161,29 @@ public class ParserParser extends Parser {
 	}
 
 	public static class ClassContext extends ParserRuleContext {
-		public TerminalNode CLASS() { return getToken(ParserParser.CLASS, 0); }
-		public List<TerminalNode> TYPE() { return getTokens(ParserParser.TYPE); }
-		public TerminalNode TYPE(int i) {
-			return getToken(ParserParser.TYPE, i);
+		public ClassContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
 		}
+		@Override public int getRuleIndex() { return RULE_class; }
+	 
+		public ClassContext() { }
+		public void copyFrom(ClassContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class ClassDecContext extends ClassContext {
+		public Token name;
+		public Token inherits;
+		public TerminalNode CLASS() { return getToken(ParserParser.CLASS, 0); }
 		public TerminalNode LBRACE() { return getToken(ParserParser.LBRACE, 0); }
 		public TerminalNode RBRACE() { return getToken(ParserParser.RBRACE, 0); }
 		public List<TerminalNode> SEMICOLON() { return getTokens(ParserParser.SEMICOLON); }
 		public TerminalNode SEMICOLON(int i) {
 			return getToken(ParserParser.SEMICOLON, i);
+		}
+		public List<TerminalNode> TYPE() { return getTokens(ParserParser.TYPE); }
+		public TerminalNode TYPE(int i) {
+			return getToken(ParserParser.TYPE, i);
 		}
 		public TerminalNode INHERITS() { return getToken(ParserParser.INHERITS, 0); }
 		public List<FeatureContext> feature() {
@@ -179,17 +192,14 @@ public class ParserParser extends Parser {
 		public FeatureContext feature(int i) {
 			return getRuleContext(FeatureContext.class,i);
 		}
-		public ClassContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_class; }
+		public ClassDecContext(ClassContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterClass(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterClassDec(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitClass(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitClassDec(this);
 		}
 	}
 
@@ -198,12 +208,13 @@ public class ParserParser extends Parser {
 		enterRule(_localctx, 2, RULE_class);
 		int _la;
 		try {
+			_localctx = new ClassDecContext(_localctx);
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(17);
 			match(CLASS);
 			setState(18);
-			match(TYPE);
+			((ClassDecContext)_localctx).name = match(TYPE);
 			setState(21);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -212,7 +223,7 @@ public class ParserParser extends Parser {
 				setState(19);
 				match(INHERITS);
 				setState(20);
-				match(TYPE);
+				((ClassDecContext)_localctx).inherits = match(TYPE);
 				}
 			}
 
@@ -283,7 +294,8 @@ public class ParserParser extends Parser {
 		}
 	}
 	public static class MethodFeatureContext extends FeatureContext {
-		public TerminalNode ID() { return getToken(ParserParser.ID, 0); }
+		public Token name;
+		public ParamContext parameter;
 		public TerminalNode LPAREN() { return getToken(ParserParser.LPAREN, 0); }
 		public TerminalNode RPAREN() { return getToken(ParserParser.RPAREN, 0); }
 		public TerminalNode COLON() { return getToken(ParserParser.COLON, 0); }
@@ -293,6 +305,7 @@ public class ParserParser extends Parser {
 			return getRuleContext(ExprContext.class,0);
 		}
 		public TerminalNode RBRACE() { return getToken(ParserParser.RBRACE, 0); }
+		public TerminalNode ID() { return getToken(ParserParser.ID, 0); }
 		public List<ParamContext> param() {
 			return getRuleContexts(ParamContext.class);
 		}
@@ -327,7 +340,7 @@ public class ParserParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(35);
-				match(ID);
+				((MethodFeatureContext)_localctx).name = match(ID);
 				setState(36);
 				match(LPAREN);
 				setState(47);
@@ -337,7 +350,7 @@ public class ParserParser extends Parser {
 					{
 					{
 					setState(37);
-					param();
+					((MethodFeatureContext)_localctx).parameter = param();
 					setState(42);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
@@ -657,57 +670,6 @@ public class ParserParser extends Parser {
 			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitAddExpr(this);
 		}
 	}
-	public static class DotExprContext extends ExprContext {
-		public List<ExprContext> expr() {
-			return getRuleContexts(ExprContext.class);
-		}
-		public ExprContext expr(int i) {
-			return getRuleContext(ExprContext.class,i);
-		}
-		public TerminalNode PERIOD() { return getToken(ParserParser.PERIOD, 0); }
-		public TerminalNode ID() { return getToken(ParserParser.ID, 0); }
-		public TerminalNode LPAREN() { return getToken(ParserParser.LPAREN, 0); }
-		public TerminalNode RPAREN() { return getToken(ParserParser.RPAREN, 0); }
-		public TerminalNode AT() { return getToken(ParserParser.AT, 0); }
-		public TerminalNode TYPE() { return getToken(ParserParser.TYPE, 0); }
-		public List<TerminalNode> COMMA() { return getTokens(ParserParser.COMMA); }
-		public TerminalNode COMMA(int i) {
-			return getToken(ParserParser.COMMA, i);
-		}
-		public DotExprContext(ExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterDotExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitDotExpr(this);
-		}
-	}
-	public static class IdParenExprContext extends ExprContext {
-		public TerminalNode ID() { return getToken(ParserParser.ID, 0); }
-		public TerminalNode LPAREN() { return getToken(ParserParser.LPAREN, 0); }
-		public TerminalNode RPAREN() { return getToken(ParserParser.RPAREN, 0); }
-		public List<ExprContext> expr() {
-			return getRuleContexts(ExprContext.class);
-		}
-		public ExprContext expr(int i) {
-			return getRuleContext(ExprContext.class,i);
-		}
-		public List<TerminalNode> COMMA() { return getTokens(ParserParser.COMMA); }
-		public TerminalNode COMMA(int i) {
-			return getToken(ParserParser.COMMA, i);
-		}
-		public IdParenExprContext(ExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterIdParenExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitIdParenExpr(this);
-		}
-	}
 	public static class AssignExprContext extends ExprContext {
 		public Token left;
 		public ExprContext right;
@@ -776,6 +738,37 @@ public class ParserParser extends Parser {
 			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitFalseExpr(this);
 		}
 	}
+	public static class MethodDotExprContext extends ExprContext {
+		public ExprContext left;
+		public Token name;
+		public ExprContext first;
+		public ExprContext second;
+		public TerminalNode PERIOD() { return getToken(ParserParser.PERIOD, 0); }
+		public TerminalNode LPAREN() { return getToken(ParserParser.LPAREN, 0); }
+		public TerminalNode RPAREN() { return getToken(ParserParser.RPAREN, 0); }
+		public List<ExprContext> expr() {
+			return getRuleContexts(ExprContext.class);
+		}
+		public ExprContext expr(int i) {
+			return getRuleContext(ExprContext.class,i);
+		}
+		public TerminalNode ID() { return getToken(ParserParser.ID, 0); }
+		public TerminalNode AT() { return getToken(ParserParser.AT, 0); }
+		public TerminalNode TYPE() { return getToken(ParserParser.TYPE, 0); }
+		public List<TerminalNode> COMMA() { return getTokens(ParserParser.COMMA); }
+		public TerminalNode COMMA(int i) {
+			return getToken(ParserParser.COMMA, i);
+		}
+		public MethodDotExprContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterMethodDotExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitMethodDotExpr(this);
+		}
+	}
 	public static class DivExprContext extends ExprContext {
 		public ExprContext left;
 		public ExprContext right;
@@ -817,6 +810,7 @@ public class ParserParser extends Parser {
 		}
 	}
 	public static class NewExprContext extends ExprContext {
+		public Token right;
 		public TerminalNode NEW() { return getToken(ParserParser.NEW, 0); }
 		public TerminalNode TYPE() { return getToken(ParserParser.TYPE, 0); }
 		public NewExprContext(ExprContext ctx) { copyFrom(ctx); }
@@ -827,6 +821,33 @@ public class ParserParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitNewExpr(this);
+		}
+	}
+	public static class MethodParenExprContext extends ExprContext {
+		public Token name;
+		public ExprContext first;
+		public ExprContext second;
+		public TerminalNode LPAREN() { return getToken(ParserParser.LPAREN, 0); }
+		public TerminalNode RPAREN() { return getToken(ParserParser.RPAREN, 0); }
+		public TerminalNode ID() { return getToken(ParserParser.ID, 0); }
+		public List<ExprContext> expr() {
+			return getRuleContexts(ExprContext.class);
+		}
+		public ExprContext expr(int i) {
+			return getRuleContext(ExprContext.class,i);
+		}
+		public List<TerminalNode> COMMA() { return getTokens(ParserParser.COMMA); }
+		public TerminalNode COMMA(int i) {
+			return getToken(ParserParser.COMMA, i);
+		}
+		public MethodParenExprContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterMethodParenExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitMethodParenExpr(this);
 		}
 	}
 	public static class LequalExprContext extends ExprContext {
@@ -949,11 +970,11 @@ public class ParserParser extends Parser {
 				break;
 			case 2:
 				{
-				_localctx = new IdParenExprContext(_localctx);
+				_localctx = new MethodParenExprContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 				setState(74);
-				match(ID);
+				((MethodParenExprContext)_localctx).name = match(ID);
 				setState(75);
 				match(LPAREN);
 				setState(86);
@@ -963,7 +984,7 @@ public class ParserParser extends Parser {
 					{
 					{
 					setState(76);
-					expr(0);
+					((MethodParenExprContext)_localctx).first = expr(0);
 					setState(81);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
@@ -973,7 +994,7 @@ public class ParserParser extends Parser {
 						setState(77);
 						match(COMMA);
 						setState(78);
-						expr(0);
+						((MethodParenExprContext)_localctx).second = expr(0);
 						}
 						}
 						setState(83);
@@ -1126,7 +1147,7 @@ public class ParserParser extends Parser {
 				setState(137);
 				match(NEW);
 				setState(138);
-				match(TYPE);
+				((NewExprContext)_localctx).right = match(TYPE);
 				}
 				break;
 			case 8:
@@ -1326,7 +1347,8 @@ public class ParserParser extends Parser {
 						break;
 					case 8:
 						{
-						_localctx = new DotExprContext(new ExprContext(_parentctx, _parentState));
+						_localctx = new MethodDotExprContext(new ExprContext(_parentctx, _parentState));
+						((MethodDotExprContext)_localctx).left = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
 						setState(177);
 						if (!(precpred(_ctx, 22))) throw new FailedPredicateException(this, "precpred(_ctx, 22)");
@@ -1345,7 +1367,7 @@ public class ParserParser extends Parser {
 						setState(182);
 						match(PERIOD);
 						setState(183);
-						match(ID);
+						((MethodDotExprContext)_localctx).name = match(ID);
 						setState(184);
 						match(LPAREN);
 						setState(195);
@@ -1355,7 +1377,7 @@ public class ParserParser extends Parser {
 							{
 							{
 							setState(185);
-							expr(0);
+							((MethodDotExprContext)_localctx).first = expr(0);
 							setState(190);
 							_errHandler.sync(this);
 							_la = _input.LA(1);
@@ -1365,7 +1387,7 @@ public class ParserParser extends Parser {
 								setState(186);
 								match(COMMA);
 								setState(187);
-								expr(0);
+								((MethodDotExprContext)_localctx).second = expr(0);
 								}
 								}
 								setState(192);

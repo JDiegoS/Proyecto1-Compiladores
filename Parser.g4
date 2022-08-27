@@ -2,21 +2,21 @@ grammar Parser;
 import Scanner;
 
 program:	(class)+ EOF ;
-class: CLASS TYPE (INHERITS TYPE)? LBRACE (feature SEMICOLON)* RBRACE SEMICOLON;
-feature: ID LPAREN (param (COMMA param)*)* RPAREN COLON TYPE LBRACE expr RBRACE #MethodFeature
+class: CLASS name=TYPE (INHERITS inherits=TYPE)? LBRACE (feature SEMICOLON)* RBRACE SEMICOLON   #ClassDec;  
+feature: name=ID LPAREN (parameter=param (COMMA param)*)* RPAREN COLON TYPE LBRACE expr RBRACE #MethodFeature
     |   ID COLON left=TYPE (ASSIGN right=expr)?    #AssignFeature
     ;
 
 param: ID COLON TYPE;
 
 expr: left=ID ASSIGN right=expr        # AssignExpr
-    | ID LPAREN (expr (COMMA expr)*)* RPAREN        # IdParenExpr
-    | expr (AT TYPE)? PERIOD ID LPAREN (expr (COMMA expr)*)* RPAREN        # DotExpr
+    | name=ID LPAREN (first=expr (COMMA second=expr)*)* RPAREN        # MethodParenExpr
+    | left=expr (AT TYPE)? PERIOD name=ID LPAREN (first=expr (COMMA second=expr)*)* RPAREN        # MethodDotExpr
     | IF expr THEN expr ELSE expr FI        # IfThenExpr
     | WHILE expr LOOP expr POOL        # WhileExpr
     | LBRACE (expr SEMICOLON)+ RBRACE        # BraceExpr
     | LET ID COLON TYPE (ASSIGN expr)? (COMMA ID COLON TYPE (ASSIGN expr)?)* IN expr        # LetExpr
-    | NEW TYPE        # NewExpr
+    | NEW right=TYPE        # NewExpr
     | NEG right=expr        # NegExpr
     | ISVOID expr        # IsvoidExpr
     | LPAREN expr RPAREN        # ParenExpr

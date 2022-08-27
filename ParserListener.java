@@ -17,15 +17,17 @@ public interface ParserListener extends ParseTreeListener {
 	 */
 	void exitProgram(ParserParser.ProgramContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ParserParser#class}.
+	 * Enter a parse tree produced by the {@code ClassDec}
+	 * labeled alternative in {@link ParserParser#class}.
 	 * @param ctx the parse tree
 	 */
-	void enterClass(ParserParser.ClassContext ctx);
+	void enterClassDec(ParserParser.ClassDecContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ParserParser#class}.
+	 * Exit a parse tree produced by the {@code ClassDec}
+	 * labeled alternative in {@link ParserParser#class}.
 	 * @param ctx the parse tree
 	 */
-	void exitClass(ParserParser.ClassContext ctx);
+	void exitClassDec(ParserParser.ClassDecContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code MethodFeature}
 	 * labeled alternative in {@link ParserParser#feature}.
@@ -181,30 +183,6 @@ public interface ParserListener extends ParseTreeListener {
 	 */
 	void exitAddExpr(ParserParser.AddExprContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code DotExpr}
-	 * labeled alternative in {@link ParserParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterDotExpr(ParserParser.DotExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code DotExpr}
-	 * labeled alternative in {@link ParserParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitDotExpr(ParserParser.DotExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code IdParenExpr}
-	 * labeled alternative in {@link ParserParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterIdParenExpr(ParserParser.IdParenExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code IdParenExpr}
-	 * labeled alternative in {@link ParserParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitIdParenExpr(ParserParser.IdParenExprContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code AssignExpr}
 	 * labeled alternative in {@link ParserParser#expr}.
 	 * @param ctx the parse tree
@@ -253,6 +231,18 @@ public interface ParserListener extends ParseTreeListener {
 	 */
 	void exitFalseExpr(ParserParser.FalseExprContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code MethodDotExpr}
+	 * labeled alternative in {@link ParserParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterMethodDotExpr(ParserParser.MethodDotExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code MethodDotExpr}
+	 * labeled alternative in {@link ParserParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitMethodDotExpr(ParserParser.MethodDotExprContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code DivExpr}
 	 * labeled alternative in {@link ParserParser#expr}.
 	 * @param ctx the parse tree
@@ -288,6 +278,18 @@ public interface ParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitNewExpr(ParserParser.NewExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code MethodParenExpr}
+	 * labeled alternative in {@link ParserParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterMethodParenExpr(ParserParser.MethodParenExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code MethodParenExpr}
+	 * labeled alternative in {@link ParserParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitMethodParenExpr(ParserParser.MethodParenExprContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code LequalExpr}
 	 * labeled alternative in {@link ParserParser#expr}.

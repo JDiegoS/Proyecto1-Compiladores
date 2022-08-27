@@ -17,12 +17,12 @@ class ParserListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ParserParser#class.
-    def enterClass(self, ctx:ParserParser.ClassContext):
+    # Enter a parse tree produced by ParserParser#ClassDec.
+    def enterClassDec(self, ctx:ParserParser.ClassDecContext):
         pass
 
-    # Exit a parse tree produced by ParserParser#class.
-    def exitClass(self, ctx:ParserParser.ClassContext):
+    # Exit a parse tree produced by ParserParser#ClassDec.
+    def exitClassDec(self, ctx:ParserParser.ClassDecContext):
         pass
 
 
@@ -143,24 +143,6 @@ class ParserListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ParserParser#DotExpr.
-    def enterDotExpr(self, ctx:ParserParser.DotExprContext):
-        pass
-
-    # Exit a parse tree produced by ParserParser#DotExpr.
-    def exitDotExpr(self, ctx:ParserParser.DotExprContext):
-        pass
-
-
-    # Enter a parse tree produced by ParserParser#IdParenExpr.
-    def enterIdParenExpr(self, ctx:ParserParser.IdParenExprContext):
-        pass
-
-    # Exit a parse tree produced by ParserParser#IdParenExpr.
-    def exitIdParenExpr(self, ctx:ParserParser.IdParenExprContext):
-        pass
-
-
     # Enter a parse tree produced by ParserParser#AssignExpr.
     def enterAssignExpr(self, ctx:ParserParser.AssignExprContext):
         pass
@@ -197,6 +179,15 @@ class ParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ParserParser#MethodDotExpr.
+    def enterMethodDotExpr(self, ctx:ParserParser.MethodDotExprContext):
+        pass
+
+    # Exit a parse tree produced by ParserParser#MethodDotExpr.
+    def exitMethodDotExpr(self, ctx:ParserParser.MethodDotExprContext):
+        pass
+
+
     # Enter a parse tree produced by ParserParser#DivExpr.
     def enterDivExpr(self, ctx:ParserParser.DivExprContext):
         pass
@@ -221,6 +212,15 @@ class ParserListener(ParseTreeListener):
 
     # Exit a parse tree produced by ParserParser#NewExpr.
     def exitNewExpr(self, ctx:ParserParser.NewExprContext):
+        pass
+
+
+    # Enter a parse tree produced by ParserParser#MethodParenExpr.
+    def enterMethodParenExpr(self, ctx:ParserParser.MethodParenExprContext):
+        pass
+
+    # Exit a parse tree produced by ParserParser#MethodParenExpr.
+    def exitMethodParenExpr(self, ctx:ParserParser.MethodParenExprContext):
         pass
 
 

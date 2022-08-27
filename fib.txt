@@ -1,0 +1,41 @@
+class Main {
+    io_input: IO;
+    number: Int;
+    
+    fib(n: Int) : Int {
+       if n = 0
+       then {
+            io_input.out_int(0);
+            0;
+       }            
+       else
+            if n = 1
+            then {
+                    io_input.out_int(1);
+                    1;
+               }
+            else
+                if n = 2
+                then {
+                    io_input.out_int(1);
+                    1;
+                }
+                else {
+                    io_input.out_int(fib(n - 1) + fib(n-2));
+                    fib(n - 1) + fib(n-2);
+                }
+                fi
+            fi
+       fi
+    
+    } ;
+
+
+    main() : Int {
+        {
+            number <- (io_input.in_int());
+            fib(number);    
+            
+        }
+    };
+};

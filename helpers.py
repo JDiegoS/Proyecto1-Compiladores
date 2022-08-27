@@ -74,11 +74,13 @@ def error(message, line=None):
     '''Error msg'''
 
     if line is not None:
-        print('Error en la línea ' + str(line) + ':\n\t' + message + '.')
+        print('ERROR: %s\n\tLinea [%s:]' % (message, str(line)))
+        return 'ERROR: %s\n\tLinea [%s:]' % (message, str(line))
     else:
-        print('Error: ' + message + '.')
+        print('ERROR:%s\t\t' % (message))
+        return 'ERROR:%s\t\t' % (message)
     
-    exit(3)
+    
 
 def indx(arr: list, element) -> int:
     try:

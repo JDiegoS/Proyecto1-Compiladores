@@ -6,7 +6,9 @@ Para correr el programa ejecutar en cmd (si los archivos ya estan generados, sol
 3. antlr -Dlanguage=Python3 -visitor Parser.g4
 4. python main.py
 
-Se requiere la instalacion de ANTLR, SDK de Java y antlr4-python3-runtime 
+Para borrar los archivos generados ejecutar clean.py
+
+Se requiere la instalacion de ANTLR, SDK de Java, antlr4-python3-runtime y PyQt5
 
 Juan Diego Solorzano - 18151
 
