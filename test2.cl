@@ -5,7 +5,7 @@ class Main {
 
     main() : SELF_TYPE {
         {
-            a <- ~b;
+            b <- ~a;
             not a;
         }
     } ;
