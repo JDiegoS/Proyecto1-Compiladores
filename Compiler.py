@@ -14,7 +14,7 @@ class Compiler(object):
         
         self.errors = []
 
-    def compile(self, file):
+    def compile(self, file, text):
         data = FileStream(file)
         lexer = ParserLexer(data)
         stream = CommonTokenStream(lexer)
@@ -26,9 +26,7 @@ class Compiler(object):
 
         syntaxErrors = myErrorListener.getErrors()
         self.errors += syntaxErrors
-        if len(syntaxErrors) > 0:
-            return
-
+        
         #Arbol
         #os.system('grun Parser program test2.cl -gui -tokens')
 
@@ -589,8 +587,12 @@ class MyVisitor(ParserVisitor):
 
             print("ERROR: No corresponden los tipos de la asignacion\n\tLinea [%s:%s] \n\t\t%s" % (ctx.start.line, ctx.start.column, ctx.getText()))
             self.errors.append("ERROR: No corresponden los tipos de la asignacion\n\tLinea [%s:%s] \n\t\t%s" % (ctx.start.line, ctx.start.column, ctx.getText()))
-        
-        index = [ x['name'] for x in self.table ].index(ctx.left.text)
+
+        if fromOp:
+            leftT = ctx.left.getText().split('<-')[0]
+        else:
+            leftT = ctx.left.text
+        index = [ x['name'] for x in self.table ].index(leftT)
         self.table[index]['value'] = ctx.right.getText()
 
 
@@ -608,7 +610,7 @@ class MyVisitor(ParserVisitor):
 
     def visitNewExpr(self, ctx):
         return ctx.right.text
-        
+
     def visitMethodDotExpr(self, ctx):
 
         exprType = 'Error'
@@ -649,8 +651,10 @@ class MyVisitor(ParserVisitor):
             methodType = list(filter(lambda x: (x['name'] == ctx.name.text) and ((x['scope'] == self.current_scope) or x['scope'] == attr['type']), self.table))
         else:
             methodType = list(filter(lambda x: (x['name'] == ctx.name.text) and (x['scope'] == self.current_scope), self.table))
-        methodType = methodType[0]['type']
-        print(methodType)
+        if len(methodType) > 0: 
+            methodType = methodType[0]['type']
+        else:
+            methodType = 'Error'
 
         if (ctx.name.text , 'method', self.current_scope) not in map(lambda x: (x['name'], x['kind'], x['scope']), self.table):
             
@@ -699,6 +703,6 @@ class MyVisitor(ParserVisitor):
         self.visitChildren(ctx)
         return methodType
     
-
+text=open('test2.cl').read()
 main = Compiler()
-main.compile('test2.cl')
+main.compile('test2.cl', text)

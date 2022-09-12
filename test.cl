@@ -1,5 +1,5 @@
-classsss Main inherits IO {
+class Main {
    main(): SELF_TYPE {
-	out_string("Hello, World.")
+	out_string("Hello, World.");
    };
 };

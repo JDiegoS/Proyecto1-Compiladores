@@ -10,6 +10,7 @@ class MyErrorListener(object):
         error = 'ERROR sintactico:\n\tLinea [%s:%s] %s' % (str(line), str(column), msg.replace('mismatched input', 'se obtuvo').replace('expecting', 'se esperaba').replace('extraneous input', 'se obtuvo'))
         print(error)
         self.errors.append(error)
+
     
     def getErrors(self):
         return self.errors

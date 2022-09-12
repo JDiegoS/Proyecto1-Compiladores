@@ -76,7 +76,7 @@ class MainWindow(qtw.QWidget):
             f.write(self.my_text.toPlainText())
             f.close()
             compiler = Compiler()
-            compiler.compile(self.currentFile)
+            compiler.compile(self.currentFile, self.my_text.toPlainText())
             errorText = 'Consola\n'
             for i in compiler.errors:
                 errorText += i + '\n'

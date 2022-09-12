@@ -1,9 +1,12 @@
-class Main {
-    cadena: String;
+class Main inherits Int{
+    cadena: Int;
+    a: String;
+    b: Bool;
     io_input: IO;
 
     main() : IO {
         {
+            cadena <- a + b;
             cadena <- (io_input.in_string());
             cadena <- (cadena.concat("Add"));
             io_input.out_string(cadena);

@@ -1,5 +1,5 @@
-;
-CLASS ll Main oo{
+CLASS
+CLAs {INHERITS, llllo IO{
     a : Int <- 1 * 5;
     b : Bool <- false;
     c : String <- "Hola"; 
@@ -7,7 +7,6 @@ CLASS ll Main oo{
 
     main() : SELF_TYPE {
         {
-            a <- 1+2;
             b<- b+c;
             a <- b<=c; 
             a <- ~a;
